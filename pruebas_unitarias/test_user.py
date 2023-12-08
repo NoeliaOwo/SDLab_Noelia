@@ -15,6 +15,7 @@ class TestUser(unittest.TestCase):
         self.time = time.time()
         self.user = User(self.username, self.password)
         
+    # Username and Password
     def test_username(self):
         self.assertEqual(self.user.username, "Noe")
     
@@ -32,7 +33,8 @@ class TestUser(unittest.TestCase):
         
     def test_getUsername_returns_incorrect_username(self):
         self.assertNotEqual(self.user.getUsername(), "Pedro")
-
+        
+    # Last time
     def test_isAlive(self):
         self.assertTrue(self.user.isAlive())
         
@@ -44,6 +46,7 @@ class TestUser(unittest.TestCase):
         time.sleep(130)  
         self.assertFalse(self.user.isAlive())
         
+    # Refresh    
     def test_refresh(self):
         persistencia = MagicMock()
         persistencia.check_user_username.return_value = True
