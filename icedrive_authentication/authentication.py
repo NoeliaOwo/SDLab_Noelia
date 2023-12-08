@@ -1,43 +1,56 @@
-"""Module for servants implementations."""
 
 import Ice
+from icedrive_authentication.user import User
+from . import persistencia
 
+
+Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
 
-
-class User(IceDrive.User):
-    """Implementation of an IceDrive.User interface."""
-
-    def getUsername(self, current: Ice.Current = None) -> str:
-        """Return the username for the User object."""
-
-    def isAlive(self, current: Ice.Current = None) -> bool:
-        """Check if the authentication is still valid or not."""
-
-    def refresh(self, current: Ice.Current = None) -> None:
-        """Renew the authentication for 1 more period of time."""
-
-
 class Authentication(IceDrive.Authentication):
-    """Implementation of an IceDrive.Authentication interface."""
+    
+    def __init__(self):
+        self.persistencia = persistencia.Persistencia("pruebas_cliente/pruebas.json")
+        self.user_ids = {} 
+                       
+ 
+    def login(self, username: str, password: str, current: Ice.Current = None)-> IceDrive.UserPrx:
+        if not self.persistencia.check_user_password(username, password):
+            raise IceDrive.Unauthorized()
+        return self.create_new_user_proxy(username, password, current)
+    
 
-    def login(
-        self, username: str, password: str, current: Ice.Current = None
-    ) -> IceDrive.UserPrx:
-        """Authenticate an user by username and password and return its User."""
-
-    def newUser(
-        self, username: str, password: str, current: Ice.Current = None
-    ) -> IceDrive.UserPrx:
-        """Create an user with username and the given password."""
-
-    def removeUser(
-        self, username: str, password: str, current: Ice.Current = None
-    ) -> None:
-        """Remove the user "username" if the "password" is correct."""
-
-    def verifyUser(self, user: IceDrive.UserPrx, current: Ice.Current = None) -> bool:
-        """Check if the user belongs to this service.
-
-        Don't check anything related to its authentication state or anything else.
-        """
+    def newUser(self, username: str, password: str, current: Ice.Current = None) -> IceDrive.UserPrx:
+        if not self.persistencia.add_user(username, password):
+            raise IceDrive.UserAlreadyExists()
+        return self.create_new_user_proxy(username, password, current)
+    
+    
+    def removeUser(self, username: str, password: str, current: Ice.Current = None) -> None:
+        if not self.persistencia.remove_user(username, password):
+            raise IceDrive.Unauthorized()
+        if username in self.user_ids:
+            current.adapter.remove(self.user_ids.get(username))
+            del self.user_ids[username]
+            
+ 
+ 
+    def verifyUser(self, userver , current: Ice.Current = None) -> bool:
+        identity = userver.ice_getIdentity()
+        if current.adapter.find(identity):
+            return True
+        else:
+            return False
+    
+    
+    def create_new_user_proxy(self, username: str, password: str, current: Ice.Current):
+        user = User(username, password)
+        proxy = current.adapter.addWithUUID(user)
+        self.user_ids[username] = proxy.ice_getIdentity()
+        return IceDrive.UserPrx.uncheckedCast(proxy)
+    
+    
+    def print_user_ids(self):
+        for key, value in self.user_ids.items():
+            print(f'Key: {key}, Value: {value}')
+        
