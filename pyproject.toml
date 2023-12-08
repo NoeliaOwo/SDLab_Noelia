@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "icedrive-authentication"
-version = "0.0.1"
+version = "0.3.5"
 authors = [
-  { name="Put Your name Here", email="youremailaddress@uclm.es" },
+  { name="Noelia Díaz Alejo Alejo", email="noelia.diaz14@alu.uclm.es" },
 ]
 description = "Implementation of IceDrive Authentication service"
 readme = "README.md"
@@ -26,7 +26,8 @@ tests = ["pytest"]
 linters = ["black", "ruff", "pydocstyle"]
 
 [project.urls]
-"Homepage" = "https://github.com/YOURUSERNAME/YOURREPOSITORY"
+"Homepage" = "https://github.com/NoeliaOwo/SDLab_Noelia"
 
 [project.scripts]
-icedrive-authentication = "icedrive_authentication.app:main"
+icedrive-authentication-server = "icedrive_authentication.app:main"
+icedrive-authentication-client = "pruebas_cliente.CLIENTE:client"
