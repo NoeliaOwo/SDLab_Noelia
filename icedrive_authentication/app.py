@@ -6,7 +6,7 @@ from typing import List
 
 import Ice
 
-from . import autentificator 
+from . import authentication
 
 
 class AuthenticationApp(Ice.Application):
@@ -17,7 +17,7 @@ class AuthenticationApp(Ice.Application):
         adapter = self.communicator().createObjectAdapter("AuthenticationAdapter")
         adapter.activate()
 
-        servant = autentificator.Authentication()
+        servant = authentication.Authentication()
         #servant_proxy = adapter.addWithUUID(servant)
         servant_proxy = adapter.add(servant, self.communicator().stringToIdentity("Authentication"))
         
@@ -35,5 +35,5 @@ def main():
     return app.main(sys.argv, "config/authentication.config")
   
 if __name__ == "__main__": 
-     main()
+    main()
 
