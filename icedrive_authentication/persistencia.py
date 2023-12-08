@@ -1,6 +1,5 @@
 
 import json
-import Ice
 
 class Persistencia:
     
@@ -12,25 +11,36 @@ class Persistencia:
         users = {}
         with open(self.archivo, 'r') as file:
             for username, password in list(json.load(file).items()):
-                users[username] = password 
+                users[username] = password
         return users
     
-  
-    def check_user(self, username, password):
+    
+    def check_user_username(self, username):
         if username in self.users:
-            if self.users[username] == password:
-                return True
+            return True
         return False
     
     
+    def check_user_password(self, username, password):
+        if username in self.users:
+            return self.users[username] == password
+        
+    
+    def check_user(self, username, password):
+        if username in self.users and self.users[username] == password:
+            return True
+        else:
+            return False
+        
     def add_user(self, username, password):
-        if not self.check_user(username, password):
-                self.users[username] = password
-                with open(self.archivo, 'w') as file:
-                    json.dump(self.users, file)
-                return True
+        if not self.check_user_username(username):
+            self.users[username] = password
+            with open(self.archivo, 'w') as file:
+                json.dump(self.users, file)
+            return True
         else:
             return False 
+    
     
     def remove_user(self, username, password):
         if self.check_user(username, password):
@@ -40,6 +50,7 @@ class Persistencia:
                 return True
         else:
             return False
+    
     
     def update_user_password(self, username, password, new_password):
         if self.check_user(username, password):
@@ -58,10 +69,3 @@ class Persistencia:
                 json.dump(self.users, file)
        
                                      
-
-
-  
-    
-p = Persistencia("pruebas.json")
-p.remove_user("Noelia", "0123")
-#p.update_user_username("paca", "juana", "xd")
