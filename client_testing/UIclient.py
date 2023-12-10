@@ -7,7 +7,6 @@ from icedrive_authentication.user import User
 Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
 
-
 class ClientApp(Ice.Application):
     
     def run(self, args):
