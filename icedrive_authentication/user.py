@@ -7,7 +7,7 @@ Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
 
 
-from icedrive_authentication import persistencia
+from icedrive_authentication import persistence
 
 
 class User(IceDrive.User):
@@ -26,12 +26,12 @@ class User(IceDrive.User):
         now = time.time()
         return now - self.last_time <= 120
     
-    def get_persistencia(self):
-        return persistencia.Persistencia("pruebas_cliente/pruebas.json")
+    def getPersistence(self):
+        return persistence.Persistence("client_testing/file.json")
 
     def refresh(self, current: Ice.Current = None) -> None:
-        if self.get_persistencia().check_user_username(self.username):
-            if self.get_persistencia().check_user_password(self.username, self.password):
+        if self.getPersistence().check_user_username(self.username):
+            if self.getPersistence().check_user_password(self.username, self.password):
                 if self.isAlive():
                     self.last_time = time.time()
                 else:

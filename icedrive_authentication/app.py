@@ -18,8 +18,10 @@ class AuthenticationApp(Ice.Application):
         adapter.activate()
 
         servant = authentication.Authentication()
-        #servant_proxy = adapter.addWithUUID(servant)
-        servant_proxy = adapter.add(servant, self.communicator().stringToIdentity("Authentication"))
+        servant_proxy = adapter.addWithUUID(servant)
+        
+        with open('server_proxy.txt', 'w') as f:
+            f.write(str(servant_proxy))
         
         logging.info("Proxy: %s", servant_proxy)
         

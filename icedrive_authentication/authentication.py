@@ -1,7 +1,7 @@
 
 import Ice
 from icedrive_authentication.user import User
-from . import persistencia
+from . import persistence
 
 
 Ice.loadSlice('icedrive_authentication/icedrive.ice')
@@ -10,8 +10,8 @@ import IceDrive
 class Authentication(IceDrive.Authentication):
     
     def __init__(self):
-        self.persistencia = persistencia.Persistencia("pruebas_cliente/pruebas.json")
-        self.user_ids = {} 
+        self.persistencia = persistence.Persistence("client_testing/file.json")
+        self.user_identities = {} 
                        
  
     def login(self, username: str, password: str, current: Ice.Current = None)-> IceDrive.UserPrx:
@@ -29,11 +29,10 @@ class Authentication(IceDrive.Authentication):
     def removeUser(self, username: str, password: str, current: Ice.Current = None) -> None:
         if not self.persistencia.remove_user(username, password):
             raise IceDrive.Unauthorized()
-        if username in self.user_ids:
-            current.adapter.remove(self.user_ids.get(username))
-            del self.user_ids[username]
+        if username in self.user_identities:
+            current.adapter.remove(self.user_identities.get(username))
+            del self.user_identities[username]
             
- 
  
     def verifyUser(self, userver , current: Ice.Current = None) -> bool:
         identity = userver.ice_getIdentity()
@@ -46,11 +45,11 @@ class Authentication(IceDrive.Authentication):
     def create_new_user_proxy(self, username: str, password: str, current: Ice.Current):
         user = User(username, password)
         proxy = current.adapter.addWithUUID(user)
-        self.user_ids[username] = proxy.ice_getIdentity()
+        self.user_identities[username] = proxy.ice_getIdentity()
         return IceDrive.UserPrx.uncheckedCast(proxy)
     
     
     def print_user_ids(self):
-        for key, value in self.user_ids.items():
+        for key, value in self.user_identities.items():
             print(f'Key: {key}, Value: {value}')
         

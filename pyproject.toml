@@ -30,4 +30,5 @@ linters = ["black", "ruff", "pydocstyle"]
 
 [project.scripts]
 icedrive-authentication-server = "icedrive_authentication.app:main"
-icedrive-authentication-client = "pruebas_cliente.CLIENTE:client"
+icedrive-authentication-client = "client_testing.client:client"
+icedrive-authentication-UIclient = "client_testing.UIclient:client"
