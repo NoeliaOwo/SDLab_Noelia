@@ -185,14 +185,14 @@ class ClientApp(Ice.Application):
 
         Button(new_window, text="Verificar", command=lambda: self.verify_user_action(username_entry.get(), authentication, success_label)).pack()
         
-        new_window.geometry("200x150")
+        new_window.geometry("250x150")
         new_window.geometry("+{}+{}".format(self.window.winfo_rootx(), self.window.winfo_rooty()))
         
         
     def verify_user_action(self, username, authentication, success_label):
         userproxy = self.user_identities.get(username)
         if userproxy is None:
-            success_label.config(text=f"El usuario {username} no sea logeado.")
+            success_label.config(text=f"El usuario {username} no se ha logeado.")
         elif authentication.verifyUser(userproxy):
             success_label.config(text=f"El usuario {username} está verificado.")
         else:
@@ -352,6 +352,7 @@ class ClientApp(Ice.Application):
             usernames = ""
             for proxy in self.user_identities.values():
                 usernames += f"{proxy.getUsername()}, "
+            usernames = usernames[:-2]
             success_label.config(text=f"{usernames}")
         except Exception as e:
             success_label.config(text=f"Error: {str(e)}")  
