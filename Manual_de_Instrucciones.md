@@ -25,8 +25,8 @@ Tendrá disponible las siguientes opciones:
 
 ## Interfaz gráfica
 Al iniciar la aplicación aparece una ventana con dos botones, uno para acceder a las funcionalidades de Authentication y otro para acceder a las de User.
-Si pulsa Authentication, aparece una ventana con las siguientes opciones: Iniciar sesión, Crear usuario, Eliminar usuario, Verificar usuario y Acceso con usuario externo.
-En el caso de que pulse User, aparece: Obtener nombre de los usuarios logeados, Comprobar si el usuario sigue vivo, Comprobar si el usuario sigue vivo después de 2 min, Renovar validez de un usuario, Renovar (para comprobar excepciones).
+Si pulsa Authentication, aparece una ventana con las siguientes opciones: Iniciar sesión, Crear usuario, Eliminar usuario, Verificar usuario y Verificar usuario externo.
+En el caso de que pulse User, aparece: Nombres de usuarios logeados, Comprobar si sigue vivo, Comprobar si sigue vivo después de 2 min, Renovar validez, Renovar (comprobar excepciones).
 
-Espero que haya disfrutado nuestra aplicación <3
+Espero que haya disfrutado nuestra aplicación :)
 
