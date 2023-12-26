@@ -1,7 +1,7 @@
 
 import Ice
-from icedrive_authentication.user import User
-from . import persistence
+from user import User
+from persistence import Persistence
 
 
 Ice.loadSlice('icedrive_authentication/icedrive.ice')
@@ -10,7 +10,7 @@ import IceDrive
 class Authentication(IceDrive.Authentication):
     
     def __init__(self):
-        self.persistencia = persistence.Persistence("client_testing/file.json")
+        self.persistencia = Persistence("client_testing/file.json")
         self.user_identities = {} 
                        
  
