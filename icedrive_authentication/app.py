@@ -66,36 +66,6 @@ class AuthenticationApp(Ice.Application):
         self.communicator().waitForShutdown()
 
         return 0
- 
-class Eamen:       
- def getProxy(self):
-     print("hola")
-     
-     
-class Discovery(IceDrive.Discovery):
-    """Servants class for service discovery."""
-    
-    def __init__(self):
-        self.authentication_services = set()
-        self.directory_services = set()
-        self.blob_services = set()
-
-    def announceAuthentication(self, prx: IceDrive.AuthenticationPrx, current: Ice.Current = None) -> None:
-        """Receive an Authentication service announcement."""
-        
-        print("puta")
-        self.authentication_services.add(prx)
-        print(prx)
-        
-    def announceDirectoryServicey(self, prx: IceDrive.DirectoryServicePrx, current: Ice.Current = None) -> None:
-        """Receive an Directory service announcement."""
-        self.directory_services.add(prx)
-        print(prx)
-
-    def announceBlobService(self, prx: IceDrive.BlobServicePrx, current: Ice.Current = None) -> None:
-        """Receive an Blob service announcement."""
-        self.blob_services.add(prx)
-        print(prx)
 
 
 def main():
