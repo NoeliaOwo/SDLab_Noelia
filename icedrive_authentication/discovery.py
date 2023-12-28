@@ -18,7 +18,7 @@ class Discovery(IceDrive.Discovery):
     def announceAuthentication(self, prx: IceDrive.AuthenticationPrx, current: Ice.Current = None) -> None:
         """Receive an Authentication service announcement."""
         
-        print("puta")
+        print("paso por aquí")
         self.authentication_services.add(prx)
         print(prx)
         
