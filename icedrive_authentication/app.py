@@ -8,23 +8,21 @@ from typing import List
 
 import Ice
 
-Ice.loadSlice('icedrive_authentication/icedrive.ice')
+from .discovery import Discovery
+
+#Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
-from authentication import Authentication
+from .authentication import Authentication
+from .delayed_response import AuthenticationQueryResponse
 #from icedrive_authentication import authentication
 import IceStorm
 
 
-def anunciar(proxy, servant):
+def anunciar(proxy, servant_proxy):
     while True:
-        proxy.announceAuthentication(IceDrive.AuthenticationPrx.uncheckedCast(servant))
-        print("Anunciado")
+        proxy.announceAuthentication(IceDrive.AuthenticationPrx.uncheckedCast(servant_proxy))
         time.sleep(5)  
-
-def escuchar():
-    while True:
         
-        time.sleep(1)  
 
 class AuthenticationApp(Ice.Application):
     """Implementation of the Ice.Application for the Authentication service."""
@@ -43,19 +41,16 @@ class AuthenticationApp(Ice.Application):
         
         adapter = self.communicator().createObjectAdapter("AuthenticationAdapter")
         adapter.activate()
+        
         servant = Authentication()
         servant_proxy = adapter.addWithUUID(servant)
-        
+        discovery = Discovery()
+        discovery_proxy = adapter.addWithUUID(discovery)
         proxy = IceDrive.DiscoveryPrx.uncheckedCast(topic.getPublisher())
-        print(topic.getPublisher())
         
-        #servant_proxy = IceDrive.AuthenticationPrx.uncheckedCast(topic.getPublisher())
-        proxy.announceAuthentication(IceDrive.AuthenticationPrx.uncheckedCast(servant_proxy))
-        
-        # hago dos hilos uno para anunciarme cada 5 segundos y otro para escuchar y añadir los servicios a mi set de proxys de cada servicio
-        #threading.Thread(target=anunciar, args=(proxy, servant_proxy), daemon=True).start()
-        #threading.Thread(target=anunciar(proxy, servant_proxy), daemon=True).start()
-        #threading.Thread(target=escuchar(), daemon=True).start()
+        topic.subscribeAndGetPublisher({}, discovery_proxy)
+        threading.Thread(target=anunciar, args=(proxy, servant_proxy), daemon=True).start()
+    
         
         with open('server_proxy.txt', 'w') as f:
             f.write(str(servant_proxy))
@@ -66,36 +61,6 @@ class AuthenticationApp(Ice.Application):
         self.communicator().waitForShutdown()
 
         return 0
- 
-class Eamen:       
- def getProxy(self):
-     print("hola")
-     
-     
-class Discovery(IceDrive.Discovery):
-    """Servants class for service discovery."""
-    
-    def __init__(self):
-        self.authentication_services = set()
-        self.directory_services = set()
-        self.blob_services = set()
-
-    def announceAuthentication(self, prx: IceDrive.AuthenticationPrx, current: Ice.Current = None) -> None:
-        """Receive an Authentication service announcement."""
-        
-        print("puta")
-        self.authentication_services.add(prx)
-        print(prx)
-        
-    def announceDirectoryServicey(self, prx: IceDrive.DirectoryServicePrx, current: Ice.Current = None) -> None:
-        """Receive an Directory service announcement."""
-        self.directory_services.add(prx)
-        print(prx)
-
-    def announceBlobService(self, prx: IceDrive.BlobServicePrx, current: Ice.Current = None) -> None:
-        """Receive an Blob service announcement."""
-        self.blob_services.add(prx)
-        print(prx)
 
 
 def main():
