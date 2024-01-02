@@ -7,7 +7,7 @@ Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
 
 
-from persistence import Persistence
+from .persistence import Persistence
 
 
 class User(IceDrive.User):

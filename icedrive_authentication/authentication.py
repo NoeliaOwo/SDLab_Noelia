@@ -1,7 +1,7 @@
 
 import Ice
-from user import User
-from persistence import Persistence
+from .user import User
+from .persistence import Persistence
 
 
 Ice.loadSlice('icedrive_authentication/icedrive.ice')
