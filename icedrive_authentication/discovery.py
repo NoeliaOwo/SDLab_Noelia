@@ -6,7 +6,6 @@ Ice.loadSlice('icedrive_authentication/icedrive.ice')
 import IceDrive
 
 
-
 class Discovery(IceDrive.Discovery):
     """Servants class for service discovery."""
     
@@ -17,8 +16,6 @@ class Discovery(IceDrive.Discovery):
 
     def announceAuthentication(self, prx: IceDrive.AuthenticationPrx, current: Ice.Current = None) -> None:
         """Receive an Authentication service announcement."""
-        
-        print("paso por aquí")
         self.authentication_services.add(prx)
         print(prx)
         
@@ -31,6 +28,8 @@ class Discovery(IceDrive.Discovery):
         """Receive an Blob service announcement."""
         self.blob_services.add(prx)
         print(prx)
+        
+
         
         
     
