@@ -2,7 +2,6 @@
 import sys
 import time
 from typing import List
-from threading import Thread, Timer
 
 import Ice
 import IceStorm
@@ -14,17 +13,12 @@ from .delayed_response import AuthenticationQuery
 from .persistence import Persistence
 
 
-def announce(discovery, authentication):
-    while True:
-        discovery.announceAuthentication(IceDrive.AuthenticationPrx.uncheckedCast(authentication))
-        time.sleep(5)
-        
-         
 class AuthenticationApp(Ice.Application):
     """Implementation of the Ice.Application for the Authentication service."""
 
     def run(self, args: List[str]) -> int:
         """Execute the code for the AuthentacionApp class."""
+        
         properties = self.communicator().getProperties()
         topic_name = properties.getProperty("DiscoveryTopic")
         topic_manager = IceStorm.TopicManagerPrx.checkedCast(self.communicator().propertyToProxy("IceStorm.TopicManager.Proxy"))
@@ -40,24 +34,17 @@ class AuthenticationApp(Ice.Application):
         discovery_servant = Discovery()
         discovery_proxy = adapter.addWithUUID(discovery_servant)
         discovery_topic = topic.subscribeAndGetPublisher({}, discovery_proxy)
-        discoveryProxy = IceDrive.DiscoveryPrx.uncheckedCast(topic.getPublisher())
+        discovery_publisher = IceDrive.DiscoveryPrx.uncheckedCast(topic.getPublisher())
         
   
-        authentication_query_servant = AuthenticationQuery(Persistence(properties.getProperty("PersistenceFile1")))
+        authentication_query_servant = AuthenticationQuery(Persistence(properties.getProperty("PersistenceFile2")))
         authetication_query_proxy = adapter.addWithUUID(authentication_query_servant)
         authentication_query_topic = topic.subscribeAndGetPublisher({}, authetication_query_proxy)
         
-        authentication_servant = Authentication(properties.getProperty("PersistenceFile1"), authentication_query_servant, topic)
+        authentication_servant = Authentication(properties.getProperty("PersistenceFile2"), authentication_query_servant, topic)
         authentication_proxy = adapter.addWithUUID(authentication_servant)
         
-        
-        Thread(target=announce, args=(discoveryProxy, authentication_proxy), daemon=True).start()
 
-        
-        with open('authentication_proxy.txt', 'w') as f:
-            f.write(str(authentication_proxy))
-
-        
         self.shutdownOnInterrupt()
         self.communicator().waitForShutdown()
 
@@ -71,4 +58,6 @@ def main():
   
 if __name__ == "__main__": 
     main()
+
+
 
